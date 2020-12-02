@@ -41,7 +41,6 @@
   (let [values (second tuple)]
     (* (first values) (second values))))
 
-
 (defn build-sum-pairs [values fn]
    (for [a values
          b values
@@ -57,3 +56,52 @@
         b values
         :when (= 2020 (+ (first a) b))]
     (* (extract-product a) b))))
+
+;; Second day
+
+(def in-file-2
+  (line-seq (io/reader (io/resource "day2-1.data"))))
+
+
+(defn extract-password-data [password-line]
+  (let [password (re-find #"(\d+)-(\d+)\s(.):\s(.+)" password-line)]
+    (zipmap [:min-val :max-val :character :text] (rest password))))
+
+(def to-int #(Integer/parseInt %))
+
+(defn validate-pass-rule-1
+  [{:keys [min-val max-val character text]}]
+  (let [matches (count (filter #(= (first character) %) text))]
+    (if (and (>= matches (to-int min-val)) (<= matches (to-int max-val)))
+      true
+      false)
+  ))
+
+
+(defn validate-pass-rule-2
+  [{:keys [min-val max-val character text]}]
+  (let [pos-1 (dec (to-int min-val))
+        pos-2 (dec (to-int max-val))
+        c (first character)]
+    (= 1
+    (count
+     (filter true?
+             [
+              (= (get text pos-1) c)
+              (= (get text pos-2) c)
+              ])))))
+
+(defn solver
+  [validator lines]
+  (count
+   (filter true?
+           (map #(validator (extract-password-data %))
+                lines))))
+
+(defn p2-1
+  [lines]
+  (solver validate-pass-rule-1 lines))
+
+(defn p2-2
+  [lines]
+  (solver validate-pass-rule-2 lines))
