@@ -71,8 +71,11 @@
 
 (defn validate-pass-rule-1
   [{:keys [min-val max-val character text]}]
-  (let [matches (count (filter #(= (first character) %) text))]
-    (if (and (>= matches (to-int min-val)) (<= matches (to-int max-val)))
+  (let [c (first character)
+        min (to-int min-val)
+        max (to-int max-val)
+        matches (count (filter #(= c %) text))]
+    (if (and (>= matches min) (<= matches max))
       true
       false)
   ))
