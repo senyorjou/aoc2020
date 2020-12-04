@@ -1,4 +1,4 @@
-(ns aoc2020.core
+(ns aoc2020.day02
   (:require [clojure.java.io :as io]))
 
 (def in-file
